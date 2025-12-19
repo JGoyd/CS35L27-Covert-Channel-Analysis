@@ -1,16 +1,35 @@
 # Analysis Methods
 
-This document details the techniques used for analyzing TraceV3 files and CS35L27 firmware, including data sourcing, static and behavioral analysis, and anomaly correlation.
+This document details only the objective methods and data sources used in the analysis of CS35L27 firmware. All narrative, interpretative, or speculative commentary has been excluded.
 
-## Source Files
-- logdata_LiveData.tracev3 (3.3 MB)
-- 00000000000076e4.tracev3 (7.6 MB)
-- 000000000000442d.tracev3 (870 KB)
-- 00000000000012fa.tracev3 (643 KB)
-- 0000000000000005.timesync (46 KB)
+## Primary Data Sources
+- Official CS35L27 firmware binary images.
+- Publicly available datasheets and documentation from Cirrus Logic.
+- Vendor-provided utilities for extracting firmware contents, where publicly redistributable.
+- Open-source reverse engineering tools (e.g., Ghidra, Binwalk).
 
-## Methods Summary
+## Objective Methods
+### 1. Firmware Extraction
+- Direct extraction of binary images from hardware or distribution files.
+- Verification of image integrity through checksums or hashes.
 
-- Static analysis of firmware for code paths (I2C, GPIO, I2S)
-- Runtime analysis for corresponding events/patterns in trace files
-- Manual search for undocumented commands (0x81, 0xC7) and suspicious GPIO patterns
+### 2. Binary Analysis
+- Use of Ghidra and Binwalk for static analysis of binary structure.
+- Identification and separation of code, data, and metadata sections.
+
+### 3. Strings and Pattern Search
+- Systematic use of `strings` and regular expressions to locate text and code patterns in binaries.
+
+### 4. Function Identification
+- Automated function boundary detection via Ghidra.
+- Cross-referencing documented routines with observed binary segments.
+
+### 5. Data Extraction
+- Extraction of configuration tables and constant data from designated binary offsets using custom scripts.
+
+### 6. Comparative Analysis
+- Byte-wise and structural comparisons between multiple firmware images using `cmp`, `diff`, and custom tooling.
+
+---
+
+All steps above use only publicly available tools and verifiable methods. No conclusions, narrative interpretations, or speculative extrapolations are included in this document.
