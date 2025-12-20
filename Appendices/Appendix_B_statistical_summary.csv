@@ -1,9 +1,11 @@
+# I2S Configuration Types
 Type,Count,Percentage
 TX only (0x01),3,50.0%
 RX only (0x02),1,16.7%
 TX+RX (0x03),1,16.7%
 Reset (0x04),1,16.7%
 
+# Analysis Risk Matrix
 Aspect,Finding,Certainty,Risk
 I2S Bidirectional,Confirmed,95%,CRITICAL
 Extended Cmd 0xC7,Read/Write,90%,CRITICAL
@@ -14,12 +16,15 @@ Buffer Ops,Exists,70%,MODERATE
 Covert Channels,Multiple,85%,HIGH
 Runtime Active,1600+ cmds,100%,CRITICAL
 
-GPIO Operation Context,Offset,Context
+# GPIO Operation Context
+GPIO Operation,Offset,Context
 CLR,0xE080CE,I2S config BEFORE, External write BEFORE
 CLR,0xE0841A,I2S config AFTER, External write AFTER
 CLR,0xE08452,I2S config BEFORE, External write BEFORE
 SETB,0xE08593,I2S config BEFORE, External write BEFORE
 
+# GPIO Context Summary
+Description,Value
 Total GPIO 0x38 ops,8
 Within I2S context,4
 Percent within I2S context,50.0%
