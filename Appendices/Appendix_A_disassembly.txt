@@ -1,1 +1,13 @@
-<provide your disassembly content here>
+--- Command 0xC7 Handler (0xE08F7C) ---
+0xE08F88: MOVX @DPTR, A     ; Write to external register
+0xE08F8B: MOVX A, @DPTR     ; Read from external register  
+0xE08F8C: RETI              ; Return from interrupt
+
+--- Command 0x81 Handler (0xE08EA7) ---
+0xE08EC7: LCALL 0x9054      ; Call subroutine (external region)
+0xE08EEE: RETI              ; Return from interrupt
+
+--- Buffer Writes ---
+0xE08230: MOVX @R1, A
+0xE08BE4: MOVX @R1, A  
+0xE08C1A: MOVX @R0, A
