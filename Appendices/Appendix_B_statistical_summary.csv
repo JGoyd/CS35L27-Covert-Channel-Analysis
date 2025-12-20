@@ -1,0 +1,25 @@
+Type,Count,Percentage
+TX only (0x01),3,50.0%
+RX only (0x02),1,16.7%
+TX+RX (0x03),1,16.7%
+Reset (0x04),1,16.7%
+
+Aspect,Finding,Certainty,Risk
+I2S Bidirectional,Confirmed,95%,CRITICAL
+Extended Cmd 0xC7,Read/Write,90%,CRITICAL
+Extended Cmd 0x81,Unknown,40%,MODERATE
+GPIO Correlation,50.0%,85%,HIGH
+State Machine,Detected,80%,HIGH
+Buffer Ops,Exists,70%,MODERATE
+Covert Channels,Multiple,85%,HIGH
+Runtime Active,1600+ cmds,100%,CRITICAL
+
+GPIO Operation Context,Offset,Context
+CLR,0xE080CE,I2S config BEFORE, External write BEFORE
+CLR,0xE0841A,I2S config AFTER, External write AFTER
+CLR,0xE08452,I2S config BEFORE, External write BEFORE
+SETB,0xE08593,I2S config BEFORE, External write BEFORE
+
+Total GPIO 0x38 ops,8
+Within I2S context,4
+Percent within I2S context,50.0%
