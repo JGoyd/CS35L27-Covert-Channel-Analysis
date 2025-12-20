@@ -1,53 +1,41 @@
-# CS35L27 Firmware and Runtime Forensic Analysis
+# CS35L27 Firmware Security Analysis
 
-This repository documents the ground-truth results of forensic analysis of the CS35L27 amplifier firmware, configuration, and runtime behavior.  
-**All observed behaviors, features, and command usage are described strictly as documented in device binaries and operational logs, without speculation or narrative interpretation.**
+## Overview
 
----
-
-## Unexplained or Undocumented Capabilities
-
-During analysis, several **unknown or undocumented technical behaviors and capabilities** were observed, including but not limited to:
-- Use of extended/undocumented I2C commands
-- Code paths enabling uncommon hardware features (e.g., bidirectional I2S)
-- High-frequency toggling of specific GPIO bits
-
-**These cannot be fully explained based solely on available public documentation and the data present on the device.**
-
----
-
-### Vendor Review Required
-
-- The presence of these capabilities and their extensive use at runtime **require clarification from the chip or device vendor** to determine whether they represent intended behavior or pose security/privacy risks.
-- **No claims of confirmed vulnerabilities are made in this repository:** rather, there is a strong recommendation that the vendor or a qualified third party review these technical findings to rule out potential backdoors or misuse.
-
----
+This repository contains supporting materials and analysis for a hardware and firmware security review of the Cirrus Logic CS35L27 audio codec as deployed in the iPhone 14 Pro Max running iOS 26.2. The work identifies firmware behaviors **consistent with potential covert channel functionality** and documents extended command handlers, state machine routines, GPIO/I2S usage patterns, and statistical anomalies within the production firmware.
 
 ## Repository Structure
 
-```
-CS35L27-firmware-analysis/
-├── docs/
-│   └── analysis-methods.md            # Data sources and analytic procedures
-├── report/
-│   ├── findings.md                    # Core observed technical findings
-│   ├── technical-details.md           # Assembly, register, and bit-level details
-│   ├── runtime-trace-analysis.md      # Objective TraceV3 runtime evidence
-│   └── comparison-and-correlation.md  # Firmware <-> runtime cross-reference table
-```
----
+- **CS35L27_iPhone14ProMax_PSIRT_Main_Report.md**  
+  Full disclosure report suitable for PSIRT/CERT submission, including risk impact and technical assessment.
+- **Appendix_A_disassembly.txt**  
+  Key disassembly excerpts of extended command handlers and buffer logic.
+- **Appendix_B_statistical_summary.csv**  
+  Statistical summaries covering register usage, command frequency, and pattern analysis.
+- **Appendix_C_firmware_sequences.txt**  
+  Representative event sequences and state-machine evidence observed in the firmware.
+- **Appendix_D_methodology.txt**  
+  Methods, analysis environment, and extraction limitations.
 
-**Each file reports only measured, observable facts from the corresponding source(s). No speculation or narrative is included.**
+## Key Findings
 
----
+- **Bidirectional Audio Capability:**  
+  Over 33% of configuration states enable input or microphone sampling modes within the CS35L27 firmware.
+- **Extended Handler Exposure:**  
+  Production firmware implements command handlers (e.g., 0xC7 and 0x81) that permit privileged reconfiguration.
+- **Behavior Consistent with Potential Covert Channel:**  
+  State machine routines and GPIO/I2S toggling patterns could enable unauthorized audio or data paths.
+- **Elevated Statistical Likelihood:**  
+  Pattern analysis suggests purposeful or exploitable logic beyond normal diagnostic or test activity.
 
-*Continue with your “Unexplained or Undocumented Capabilities” and “Vendor Review Required” sections…*
+## Intended Audience
 
-## Scope Statement
+- Product Security Incident Response Teams (PSIRT)
+- Firmware and hardware security researchers
+- Auditors of embedded device supply chains
 
-- All findings are based strictly on direct binary and trace analysis—no assumptions or attack scenarios are included.
-- This repository is intended as an evidence-based platform for deeper review, vendor clarification, and possible reference device comparison.
+## Caveats
 
----
-
-**If you are a vendor, developer, or security professional with access to reference documentation or source code, analysis contributions and clarifications are welcome to aid in definitive assessment.**
+- All analysis performed on a production iPhone 14 Pro Max (iOS 26.2), single unit, without a reference/control device.
+- Attribution of firmware behaviors is based on static/code and statistical analysis.
+- No userland exploit or attack code is included—this research focuses on firmware and hardware level risk.
