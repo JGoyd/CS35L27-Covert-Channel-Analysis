@@ -1,0 +1,6 @@
+Methodology and Analysis Environment
+
+- Standalone static firmware analysis performed on iPhone 14 Pro Max, iOS 26.2, with no reference/clean device for comparison.
+- Firmware memory extracted via device tools; analyzed with disassembler, code inspection, and event sequence reconstruction.
+- Event/repetition frequencies, opcode sequences, and hardware control correlations derived from static code and configuration log review.
+- Analysis assumes trace and binary logs/maps obtained directly from untampered firmware; limits noted for lack of reference/dynamic runtime output.
