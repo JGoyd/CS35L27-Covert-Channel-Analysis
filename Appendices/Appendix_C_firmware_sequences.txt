@@ -1,0 +1,17 @@
+Activation Sequence: I2S Bidirectional Capability
+
+Between I2S writes at 0xE0817B and 0xE08590:
+  - 1050 bytes between events
+  - GPIO ops: 14 (SETB 0x34, CLR/SETB 0x32, 0x38, 0x2B, multiple toggles)
+  - Final: SETB 0x38 at 0xE08593 — activation before I2S bidirectional write
+
+After I2S bidirectional:
+  - 4 GPIO ops within next 184 bytes
+  - CLR 0x38 at 0xE08641 (possible “deactivation/cleanup”)
+Pattern:
+  1. Multiple GPIO toggles
+  2. SETB 0x38 [activation]
+  3. I2S bidirectional mode write
+  4. Operation executes
+  5. CLR 0x38 [cleanup]
+  6. Return to normal I2S mode
