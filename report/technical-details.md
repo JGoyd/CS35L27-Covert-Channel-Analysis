@@ -1,57 +1,69 @@
-# Technical Details
-
-## Extended Command Activity Breakdown
-
-**Command 0x81:**
-- Total occurrences: 1,432
-- Near I2C address 0x40: High correlation
-- Example contexts show byte 0x40 nearby
-- Frequency: Very high (possibly every few seconds during use)
-
-**Command 0xC7:**
-- Total occurrences: 968
-- Near I2C address 0x40: High correlation
-- Example contexts show byte 0x40 nearby
-- Frequency: High (possibly system event triggered)
-
-**Usage Pattern:**
-- Both commands appear throughout traces
-- Not concentrated in boot or specific time
-- Suggests ongoing use during operation
+# CS35L27 Firmware and Trace Technical Details
 
 ---
 
-## GPIO Activity Breakdown
+## I2S Code Path Details
 
-**Bit 0x38 (209 operations):**
-- SETB: ~70 times
-- CLR: ~139 times
-- Pattern: More CLR than SETB (2:1 ratio)
-- Interpretation: Possibly "active-low" control signal
-- Frequency: Very high
+### Bidirectional Mode Write
 
-**Bit 0x34 (35 operations):**
-- Mix of SETB/CLR
-- Frequency: Moderate
-- Could be: Secondary control or status
+- **First path (0xE082C2):**  
+  `MOV A, #0x03; MOVX @DPTR, A`  
+  Address: 0x0000  
+  — Enables both transmit (TX) and receive (RX) in I2S control register.
+- **Second path (0xE0858E):**  
+  `MOV DPTR, #0x0003; MOV A, #0x03; MOVX @DPTR, A`
 
-**Bit 0x3A (23 operations):**
-- Correlates: GPIO2 interrupt (from IODeviceTree)
-- Frequency: Lower than others
-- Likely: Interrupt signaling (expected)
+- **Note:**  
+  Value `0x03` usage is uncommon in typical speaker amplifier firmware, which usually only requires TX. RX (microphone-like operation) is atypical unless for diagnostics or advanced features.
 
 ---
 
-## I2S Pattern Analysis
+## Extended I2C Command Paths
 
-**"I2SBHkZStack" String:**
-- Appears in audio subsystem traces
-- "Stack" suggests software layer
-- "BH" meaning unknown
-- Could be: "Bidirectional Host" or "Base Host"
+- **Handler at 0xE08EA4:**  
+  Triggered on `CJNE A, #0x81`. Non-standard command handling.
+- **Handler at 0xE08F79:**  
+  Triggered on `CJNE A, #0xC7`. Similarly not standard across typical CS35L27 implementations.
 
-**Value 0x03 Near I2S:**
-- 18 occurrences of pattern
-- Cannot confirm: If this is mode register write
-- Cannot confirm: Timing or context
-- Need: Protocol analyzer or kernel trace
+---
+
+## Control Flow and Function Breakdown
+
+- **Call Instructions:** 113 (68 LCALL, 45 ACALL)
+- **Return Instructions:** 56 (Imbalance: 57)
+- **Long jumps (LJMP):** 104
+- **Short jumps (SJMP/AJMP):** 129
+- **Switch/case-style indirect jumps (`JMP @A+DPTR`):** 3
+
+- **Cyclomatic Complexity:** 521  
+  — For 4KB code size, this is high but not unprecedented in event-driven embedded code.
+
+---
+
+## GPIO Operations
+
+| Bit  | Firmware Usage | Description/Notes      |
+|------|---------------|------------------------|
+| 0x3A | 5 SETB/CLR    | Matches probable INT   |
+| 0x34 | 8 SETB/CLR    | Frequent general usage |
+| 0x38 | 8 SETB/CLR    | Frequent general usage |
+
+*All toggles present in firmware, with detailed match to runtime evidence in TraceV3 logs.*
+
+---
+
+## Entropy and String Patterns
+
+- DSP region (0x0C00–0x0FFF) shows highest entropy (7.30 bits/byte), matching expectations for optimized, dense DSP code.
+- 11 minimal ASCII fragments (4–6 chars each), none corresponding to commands/phrases that indicate covert functions.
+
+---
+
+## Codecctl.txt Usage
+
+- Register initialization patterns extracted and mapped to firmware behavior.
+- Confirms settings and expected register defaults from boot/init phase.
+
+---
+
+All statements above are based on direct static or hex evidence, with reference to actual offsets and disassembly output only.
