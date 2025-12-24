@@ -111,11 +111,4 @@ No dynamic exploit provided due to lack of elevated access/reference hardware. E
 
 ---
 
-## 10. Contact Information
 
-For response, further questions, or followup:  
-
-Joseph Goydish II
-newt0ns_law@proton.me
-
----
